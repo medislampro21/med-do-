@@ -130,5 +130,23 @@ This will help improve the project for everyone 🙏
 
 > Note: This project is licensed under GPL-3.0, so any reused code must also remain open-source under the same license.S
 ## ⭐️ Support
+## 📸 Screenshots
+
+<p float="left">
+  <img src="screenshots/01.png" width="200"/>
+  <img src="screenshots/02.png" width="200"/>
+  <img src="screenshots/03.png" width="200"/>
+  <img src="screenshots/04.png" width="200"/>
+  <img src="screenshots/05.png" width="200"/>
+  <img src="screenshots/06.png" width="200"/>
+</p>
+
+---
+
+## 📲 Download on Google Play
+
+<a href="https://play.google.com/store/apps/details?id=com.mhd.meddo">
+  <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" width="200"/>
+</a>
 
 If you find this project interesting, consider giving it a star ⭐️
