@@ -1,0 +1,163 @@
+package com.mhd.grit.viewmodels
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.mhd.grit.core.domain.AlarmScheduler
+import com.mhd.grit.core.tasks.domain.Category
+import com.mhd.grit.core.tasks.domain.CategoryColors
+import com.mhd.grit.core.tasks.domain.TaskRepo
+import com.mhd.grit.core.tasks.presentation.TaskAction
+import com.mhd.grit.core.tasks.presentation.TaskState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class TasksViewModel(
+    stateLayer: StateLayer,
+    private val repo: TaskRepo,
+    private val scheduler: AlarmScheduler
+) : ViewModel() {
+
+    private var savedJob: Job? = null
+    private val _state = stateLayer.tasksState
+
+    val state = _state.asStateFlow()
+        .onStart {
+            // runs when flow starts
+            observeTasks()
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            TaskState()
+        )
+
+    // handles actions from task page
+    fun onAction(action: TaskAction) {
+        viewModelScope.launch {
+            when (action) {
+                is TaskAction.UpsertTask -> {
+                    repo.upsertTask(action.task)
+
+                    scheduler.schedule(action.task)
+                }
+
+                TaskAction.DeleteTasks -> {
+                    deleteTasks()
+                }
+
+                is TaskAction.ChangeCategory -> {
+                    _state.update {
+                        it.copy(
+                            currentCategory = action.category
+                        )
+                    }
+                }
+
+                is TaskAction.AddCategory -> {
+                    upsertCategory(action.category)
+
+                    _state.update {
+                        it.copy(
+                            currentCategory = it.tasks.keys.firstOrNull()
+                        )
+                    }
+                }
+
+                is TaskAction.ReorderTasks -> {
+                    for (pair in action.mapping) {
+                        repo.updateTaskIndexById(pair.second.id, pair.first)
+                    }
+                }
+
+                is TaskAction.ReorderCategories -> {
+                    for (category in action.mapping) {
+                        upsertCategory(category.second.copy(index = category.first))
+                    }
+
+                    delay(200)
+
+                    _state.update {
+                        it.copy(
+                            currentCategory = it.tasks.keys.firstOrNull()
+                        )
+                    }
+                }
+
+                is TaskAction.DeleteCategory -> {
+                    deleteCategory(action.category)
+
+                    delay(200)
+
+                    _state.update {
+                        it.copy(
+                            currentCategory = it.tasks.keys.firstOrNull()
+                        )
+                    }
+                }
+
+                is TaskAction.DeleteTask -> repo.deleteTask(action.task)
+            }
+        }
+    }
+
+    private fun observeTasks() {
+        savedJob?.cancel()
+        savedJob = viewModelScope.launch {
+            combine(
+                repo.getTasksFlow(),
+                repo.getCompletedTasksFlow()
+            ) { tasks, completedTasks ->
+                _state.update {
+                    it.copy(
+                        tasks = tasks,
+                        completedTasks = completedTasks
+                    )
+                }
+
+                if (_state.value.currentCategory == null) {
+                    _state.update {
+                        it.copy(
+                            currentCategory = tasks.keys.firstOrNull()
+                        )
+                    }
+                }
+
+                if (tasks.isEmpty()) addDefault()
+            }.launchIn(this)
+        }
+    }
+
+    private suspend fun addDefault() {
+        upsertCategory(Category(name = "Gym", color = CategoryColors.BLUE.color))
+    }
+
+    private suspend fun deleteTasks() {
+        for (task in _state.value.completedTasks) {
+            repo.deleteTask(task)
+        }
+    }
+
+    private suspend fun upsertCategory(category: Category) {
+        repo.upsertCategory(category)
+    }
+
+    private suspend fun deleteCategory(category: Category) {
+        if (_state.value.currentCategory == category) {
+            _state.update {
+                it.copy(
+                    currentCategory = it.tasks.keys.first()
+                )
+            }
+        }
+
+        repo.deleteCategory(category)
+    }
+}

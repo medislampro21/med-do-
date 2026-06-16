@@ -1,0 +1,39 @@
+package com.mhd.grit.core.tasks.presentation.ui.component
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import com.mhd.grit.core.tasks.domain.Category
+import com.mhd.grit.core.tasks.domain.Task
+
+@Composable
+actual fun TaskUpsertSheet(
+    task: Task,
+    categories: List<Category>,
+    onDismissRequest: () -> Unit,
+    onUpsert: (Task) -> Unit,
+    onDelete: () -> Unit,
+    is24Hr: Boolean,
+    modifier: Modifier,
+    save: Boolean
+) {
+    var showDateTimePicker by remember { mutableStateOf(false) }
+
+    TaskUpsertSheetContent(
+        task = task,
+        categories = categories,
+        onDismissRequest = onDismissRequest,
+        onUpsert = onUpsert,
+        onDelete = onDelete,
+        is24Hr = is24Hr,
+        save = save,
+        notificationPermission = true,
+        showDateTimePicker = showDateTimePicker,
+        updateDateTimePickerVisibility = { showDateTimePicker = it },
+        onPermissionRequest = {},
+        modifier = modifier
+    )
+}

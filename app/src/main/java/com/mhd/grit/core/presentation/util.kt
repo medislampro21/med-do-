@@ -1,0 +1,134 @@
+package com.mhd.grit.core.presentation
+
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.ClipData
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.util.Log
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.Clipboard
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getString
+import com.mhd.grit.R
+import com.mhd.grit.core.data.NotificationReceiver
+import com.mhd.grit.core.domain.IntentActions
+import com.mhd.grit.core.habits.domain.Habit
+import com.mhd.grit.core.tasks.domain.Task
+import kotlin.random.Random
+
+suspend fun Clipboard.copyToClipboard(text: String) {
+    setClipEntry(
+        ClipEntry(
+            ClipData.newPlainText("Copied Text", text)
+        )
+    )
+}
+
+fun createNotificationChannel(context: Context) {
+    val name = getString(context, R.string.channel_name)
+    val descriptionText = getString(context, R.string.channel_description)
+    val importance = NotificationManager.IMPORTANCE_DEFAULT
+    val channel = NotificationChannel("1", name, importance).apply {
+        description = descriptionText
+    }
+    val notificationManager: NotificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    notificationManager.createNotificationChannel(channel)
+}
+
+// shows habit notification if permission granted
+fun habitNotification(context: Context, habit: Habit) {
+    Log.d("Habit Notification", "Sending Notification")
+
+    val intent = Intent(context, NotificationReceiver::class.java).apply {
+        putExtra("habit_id", habit.id)
+        action = IntentActions.ADD_HABIT_STATUS.action
+    }
+    val pendingBroadcast = PendingIntent.getBroadcast(
+        context,
+        habit.id.toInt(),
+        intent,
+        PendingIntent.FLAG_IMMUTABLE
+    )
+
+    val builder = NotificationCompat
+        .Builder(context, "1")
+        .setSmallIcon(R.drawable.round_alarm_24)
+        .setContentTitle(habit.title)
+        .setContentText(habit.description)
+        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setAutoCancel(true)
+        .addAction(R.drawable.round_check_circle_24, context.getString(R.string.mark_done), pendingBroadcast)
+
+    with(NotificationManagerCompat.from(context)) {
+        if (
+            ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        notify(habit.id.toInt(), builder.build())
+
+        Log.d("Habit Notification", "Notification sent!")
+    }
+}
+
+// show task notification if permission granted
+fun taskNotification(context: Context, task: Task) {
+    val intent = Intent(context, NotificationReceiver::class.java).apply {
+        putExtra("task_id", task.id)
+        action = IntentActions.MARK_TASK_DONE.action
+    }
+    val pendingBroadcast = PendingIntent.getBroadcast(
+        context,
+        task.id.toInt(),
+        intent,
+        PendingIntent.FLAG_IMMUTABLE
+    )
+    val builder = NotificationCompat
+        .Builder(context, "1")
+        .setSmallIcon(R.drawable.round_checklist_24)
+        .setContentTitle(task.title)
+        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setAutoCancel(true)
+        .addAction(R.drawable.round_check_circle_24, context.getString(R.string.mark_done), pendingBroadcast)
+
+    with(NotificationManagerCompat.from(context)){
+        if (
+            ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        notify(task.id.toInt(), builder.build())
+    }
+}
+
+// gotta add this somewhere fr 💯
+fun getRandomLine(): String {
+    return when(Random.nextInt(0, 10)) {
+        1 -> "🐊✈ YOU CAN DO THIS "
+        2 -> "✨ خطوة بخطوة نحو النجاح - مطور بواسطة [Med Pro]"
+        3 -> "📅 Med Do: رفيقك في تنظيم المهام"
+        4 -> "😺🦐 ENJOY"
+        5 -> "☕ GOOD LUCK"
+        6 -> "😺🐟 BE SAVE"
+        7 -> "🚀 جاهز لتحقيق أهدافك اليوم؟"
+        8 -> "🍀 بالتوفيق في مهامك اليوم"
+        9 -> "🦒🍉🌌 ENJOY"
+        else -> "🌟 يوم جديد، فرصة جديدة للإبداع"
+    }
+}

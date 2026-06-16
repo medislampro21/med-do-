@@ -1,0 +1,36 @@
+package com.mhd.grit.core.presentation.settings
+
+import android.content.Context
+import android.net.Uri
+import androidx.compose.ui.graphics.Color
+import com.materialkolor.PaletteStyle
+import com.mhd.grit.core.domain.AppTheme
+import com.mhd.grit.core.domain.Fonts
+import com.mhd.grit.core.domain.Pages
+import kotlinx.datetime.DayOfWeek
+
+sealed interface SettingsAction {
+    data object OnPaywallShow: SettingsAction
+    data object OnPaywallDismiss: SettingsAction
+    data object OnCheckSubscription: SettingsAction
+
+    data object OnResetBackupState : SettingsAction
+    data object OnExport : SettingsAction
+    data class OnRestore(val uri: Uri) : SettingsAction
+    data class OnCheckBiometric(val context: Context): SettingsAction
+
+    data class ChangeStartOfTheWeek(val pref: DayOfWeek) : SettingsAction
+    data class ChangeIs24Hr(val pref: Boolean) : SettingsAction
+    data class ChangeStartingPage(val page: Pages) : SettingsAction
+    data class ChangePauseNotifications(val pref: Boolean) : SettingsAction
+    data class ChangeReorderTasks(val pref: Boolean) : SettingsAction
+
+    data object OnResetTheme : SettingsAction
+    data class ChangeAppTheme(val appTheme: AppTheme) : SettingsAction
+    data class ChangeFontPref(val font: Fonts) : SettingsAction
+    data class ChangeSeedColor(val color: Color) : SettingsAction
+    data class ChangeAmoled(val pref: Boolean) : SettingsAction
+    data class ChangePaletteStyle(val style: PaletteStyle) : SettingsAction
+    data class ChangeMaterialYou(val pref: Boolean) : SettingsAction
+    data class ChangeBiometricLock(val pref: Boolean) : SettingsAction
+}
