@@ -130,17 +130,17 @@ This will help improve the project for everyone 🙏
 
 > Note: This project is licensed under GPL-3.0, so any reused code must also remain open-source under the same license.S
 ## ⭐️ Support
+
 ## 📸 Screenshots
 
 <p float="left">
-  <img src="screenshots/01.png" width="200"/>
-  <img src="screenshots/02.png" width="200"/>
-  <img src="screenshots/03.png" width="200"/>
-  <img src="screenshots/04.png" width="200"/>
-  <img src="screenshots/05.png" width="200"/>
-  <img src="screenshots/06.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/01.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/02.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/03.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/04.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/05.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/06.png" width="200"/>
 </p>
-
 ---
 
 ## 📲 Download on Google Play
