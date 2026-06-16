@@ -134,12 +134,12 @@ This will help improve the project for everyone 🙏
 ## 📸 Screenshots
 
 <p float="left">
-  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/01.png" width="200"/>
-  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/02.png" width="200"/>
-  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/03.png" width="200"/>
-  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/04.png" width="200"/>
-  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/05.png" width="200"/>
-  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/main/screenshots/06.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/master/screenshots/01.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/master/screenshots/02.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/master/screenshots/03.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/master/screenshots/04.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/master/screenshots/05.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/medislampro21/med-do-/master/screenshots/06.png" width="200"/>
 </p>
 ---
 
